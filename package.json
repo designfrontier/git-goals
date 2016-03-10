@@ -6,6 +6,10 @@
   "bin": {
     "git-goals": "./git-goals"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/designfrontier/git-goals.git"
+  },
   "preferGlobal": true,
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
