@@ -1,0 +1,38 @@
+#!/usr/bin/env node
+
+var gitLog = ''
+    , limit = 300
+    , cp = require('child_process');
+
+cp.exec('git log --author="Daniel Sellers" --oneline --shortstat --since=1/1/2016', function (err, stdout, stderr) {
+    var commitArr = stdout.split('\n').reduce(function (accum, item, index) {
+        var brokenDown = item.split(',');
+
+        if (index % 2 !== 0) {
+            accum.push({
+                added: brokenDown.length >= 2 ? parseInt(brokenDown[1].replace(/[a-z() +]/gi, ''), 10) : 0,
+                deleted: brokenDown.length >= 3 ? parseInt(brokenDown[2].replace(/[a-z() -]/gi, ''), 10) : 0
+            });
+        }
+
+        return accum;
+    }, []);
+
+
+    var results = commitArr.reduce(function (accum, item) {
+        if (item.added + item.deleted > limit) {
+            accum.overLimit++;
+        } else {
+            accum.underLimit++;
+        }
+
+        return accum;
+    }, {
+        underLimit: 0
+        , overLimit: 0
+    });
+
+    results.percentageUnder = 100 - results.overLimit / results.underLimit * 100;
+
+    console.log(results);
+})
