@@ -1,10 +1,13 @@
 #!/usr/bin/env node
 
 var gitLog = ''
-    , limit = 300
+    , limit = process.argv[3] || 300
+    , author =  process.argv[2] || 'Daniel Sellers'
     , cp = require('child_process');
 
-cp.exec('git log --author="Daniel Sellers" --oneline --shortstat --since=1/1/2016', function (err, stdout, stderr) {
+console.log(limit, process.argv, author);
+
+cp.exec('git log --author="' + author + '" --oneline --shortstat --since=1/1/2016', function (err, stdout, stderr) {
     var commitArr = stdout.split('\n').reduce(function (accum, item, index) {
         var brokenDown = item.split(',');
 
