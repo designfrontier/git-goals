@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 var gitLog = ''
-    , limit = process.argv[3] || 300
+    , limit = process.argv[3] || 350
     , author =  process.argv[2] || 'Daniel Sellers'
     , cp = require('child_process');
 
@@ -37,5 +37,13 @@ cp.exec('git log --author="' + author + '" --oneline --shortstat --since=1/1/201
 
     results.percentageUnder = 100 - results.overLimit / results.underLimit * 100;
 
-    console.log(results);
-})
+    cp.exec("git log --since=1/1/2016 | grep 'Reviewed-by: " + author + "'", function (err, stdout, stderr) {
+        var numberReviewed = stdout.split('\n').length;
+
+        results.numberReviewed = numberReviewed;
+        results.totalCommits = commitArr.length;
+        results.reviewPercentage = 100 - numberReviewed / results.totalCommits * 100
+        console.log(results);
+    });
+});
+
